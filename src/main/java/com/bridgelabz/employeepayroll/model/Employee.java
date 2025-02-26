@@ -1,19 +1,17 @@
 package com.bridgelabz.employeepayroll.model;
 
 import com.bridgelabz.employeepayroll.dto.EmployeeDTO;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class Employee {
+    private int id;
     private String name;
-    private long salary;
+    private double salary;
 
-    public Employee(EmployeeDTO employeePayrollDTO) {
-        this.name = employeePayrollDTO.getName();
-        this.salary = employeePayrollDTO.getSalary();
+    public Employee(int id, EmployeeDTO employeeDTO) {
+        this.id = id;
+        this.name = employeeDTO.getName();
+        this.salary = employeeDTO.getSalary();
     }
 }
