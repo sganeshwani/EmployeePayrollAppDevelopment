@@ -1,5 +1,7 @@
 package com.bridgelabz.employeepayroll.controller;
 
+import com.bridgelabz.employeepayroll.dto.EmployeeDTO;
+import com.bridgelabz.employeepayroll.model.Employee;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.List;
 public class EmployeePayrollController {
 
     private final List<Employee> employeeList = new ArrayList<>();
+    private int empIdCounter = 1;  // To generate unique IDs
 
     // GET: Retrieve all employees
     @GetMapping("/get")
@@ -26,46 +29,11 @@ public class EmployeePayrollController {
                 .orElse(null);
     }
 
-    // POST: Add a new employee
+    // POST: Add a new employee (Uses DTO)
     @PostMapping("/create")
-    public Employee createEmployee(@RequestBody Employee employee) {
-        employee.setId(employeeList.size() + 1);
+    public Employee createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        Employee employee = new Employee(empIdCounter++, employeeDTO.name, employeeDTO.salary);
         employeeList.add(employee);
         return employee;
-    }
-
-    // PUT: Update an existing employee
-    @PutMapping("/update/{id}")
-    public Employee updateEmployee(@PathVariable int id, @RequestBody Employee updatedEmployee) {
-        for (Employee emp : employeeList) {
-            if (emp.getId() == id) {
-                emp.setName(updatedEmployee.getName());
-                emp.setSalary(updatedEmployee.getSalary());
-                return emp;
-            }
-        }
-        return null;
-    }
-
-    // DELETE: Remove an employee
-    @DeleteMapping("/delete/{id}")
-    public String deleteEmployee(@PathVariable int id) {
-        employeeList.removeIf(emp -> emp.getId() == id);
-        return "Employee with ID " + id + " deleted!";
-    }
-
-    // Employee Model (Inner Class for Now)
-    static class Employee {
-        private int id;
-        private String name;
-        private long salary;
-
-        // Getters and Setters
-        public int getId() { return id; }
-        public void setId(int id) { this.id = id; }
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-        public long getSalary() { return salary; }
-        public void setSalary(long salary) { this.salary = salary; }
     }
 }
