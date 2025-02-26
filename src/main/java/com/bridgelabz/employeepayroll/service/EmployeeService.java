@@ -2,48 +2,48 @@ package com.bridgelabz.employeepayroll.service;
 
 import com.bridgelabz.employeepayroll.dto.EmployeeDTO;
 import com.bridgelabz.employeepayroll.model.Employee;
+import com.bridgelabz.employeepayroll.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
-    private final List<Employee> employeeList = new ArrayList<>();
-    private int employeeIdCounter = 1;
 
-    // Get all employees
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    // Fetch all employees
     public List<Employee> getAllEmployees() {
-        return employeeList;
+        return employeeRepository.findAll();
     }
 
     // Get employee by ID
     public Employee getEmployeeById(int id) {
-        return employeeList.stream()
-                .filter(emp -> emp.getId() == id)
-                .findFirst()
-                .orElse(null);
+        Optional<Employee> employee = employeeRepository.findById(id);
+        return employee.orElse(null);
     }
 
     // Add new employee
     public Employee addEmployee(EmployeeDTO employeeDTO) {
-        Employee newEmployee = new Employee(employeeIdCounter++, employeeDTO);
-        employeeList.add(newEmployee);
-        return newEmployee;
+        Employee employee = new Employee(employeeDTO);
+        return employeeRepository.save(employee);
     }
 
-    // Update existing employee
+    // Update employee details
     public Employee updateEmployee(int id, EmployeeDTO employeeDTO) {
-        for (Employee emp : employeeList) {
-            if (emp.getId() == id) {
-                emp.setName(employeeDTO.getName());
-                emp.setSalary(employeeDTO.getSalary());
-                return emp;
-            }
+        Employee existingEmployee = employeeRepository.findById(id).orElse(null);
+        if (existingEmployee != null) {
+            existingEmployee.setName(employeeDTO.getName());
+            existingEmployee.setSalary(employeeDTO.getSalary());
+            return employeeRepository.save(existingEmployee);
         }
         return null;
     }
 
-    // Delete employee by ID
-    public boolean deleteEmployee(int id) {
-        return employeeList.removeIf(emp -> emp.getId() == id);
+    // Delete employee
+    public void deleteEmployee(int id) {
+        employeeRepository.deleteById(id);
     }
 }

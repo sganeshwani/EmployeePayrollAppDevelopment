@@ -16,32 +16,33 @@ public class EmployeePayrollController {
     private EmployeeService employeeService;
 
     // Get all employees
-    @GetMapping("/employees")
+    @GetMapping("/get")
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
     // Get employee by ID
-    @GetMapping("/employees/{id}")
+    @GetMapping("/get/{id}")
     public Employee getEmployeeById(@PathVariable int id) {
         return employeeService.getEmployeeById(id);
     }
 
-    // Add a new employee
-    @PostMapping("/employees")
+    // Add new employee
+    @PostMapping("/add")
     public Employee addEmployee(@RequestBody EmployeeDTO employeeDTO) {
         return employeeService.addEmployee(employeeDTO);
     }
 
     // Update employee details
-    @PutMapping("/employees/{id}")
+    @PutMapping("/update/{id}")
     public Employee updateEmployee(@PathVariable int id, @RequestBody EmployeeDTO employeeDTO) {
         return employeeService.updateEmployee(id, employeeDTO);
     }
 
     // Delete employee
-    @DeleteMapping("/employees/{id}")
+    @DeleteMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable int id) {
-        return employeeService.deleteEmployee(id) ? "Employee deleted successfully" : "Employee not found";
+        employeeService.deleteEmployee(id);
+        return "Employee with ID " + id + " deleted successfully!";
     }
 }

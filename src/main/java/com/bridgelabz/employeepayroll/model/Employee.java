@@ -1,16 +1,26 @@
 package com.bridgelabz.employeepayroll.model;
 
 import com.bridgelabz.employeepayroll.dto.EmployeeDTO;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+@Entity
+@Table(name = "employee_payroll")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
     private double salary;
 
-    public Employee(int id, EmployeeDTO employeeDTO) {
-        this.id = id;
+    // Constructor using EmployeeDTO
+    public Employee(EmployeeDTO employeeDTO) {
         this.name = employeeDTO.getName();
         this.salary = employeeDTO.getSalary();
     }
