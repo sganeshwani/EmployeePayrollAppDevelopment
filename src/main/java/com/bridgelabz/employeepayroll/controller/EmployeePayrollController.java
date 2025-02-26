@@ -1,10 +1,19 @@
 package com.bridgelabz.employeepayroll.controller;
 
+import com.bridgelabz.employeepayroll.dto.EmployeePayrollDTO;
+import com.bridgelabz.employeepayroll.model.EmployeePayroll;
+import com.bridgelabz.employeepayroll.services.EmployeePayrollService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/employeepayroll")
 public class EmployeePayrollController {
+
+    @Autowired
+    private EmployeePayrollService service;
 
     // GET request - Retrieve a welcome message
     @GetMapping("/welcome")
@@ -12,21 +21,10 @@ public class EmployeePayrollController {
         return "Welcome to Employee Payroll App!";
     }
 
-    // POST request - Add a new employee (Dummy message for now)
+    // POST request - Add a new employee
     @PostMapping("/add")
-    public String addEmployee() {
-        return "New Employee Added Successfully!";
-    }
-
-    // PUT request - Update employee details (Dummy message for now)
-    @PutMapping("/update")
-    public String updateEmployee() {
-        return "Employee Details Updated!";
-    }
-
-    // DELETE request - Delete employee (Dummy message for now)
-    @DeleteMapping("/delete")
-    public String deleteEmployee() {
-        return "Employee Deleted!";
+    public ResponseEntity<EmployeePayroll> addEmployee(@RequestBody EmployeePayrollDTO employeeDTO) {
+        EmployeePayroll savedEmployee = service.addEmployee(employeeDTO);
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 }
