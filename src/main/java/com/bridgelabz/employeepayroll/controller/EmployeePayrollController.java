@@ -2,38 +2,29 @@ package com.bridgelabz.employeepayroll.controller;
 
 import com.bridgelabz.employeepayroll.dto.EmployeeDTO;
 import com.bridgelabz.employeepayroll.model.Employee;
+import com.bridgelabz.employeepayroll.service.EmployeePayrollService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/employeepayroll")
 public class EmployeePayrollController {
 
-    private final List<Employee> employeeList = new ArrayList<>();
-    private int empIdCounter = 1;  // To generate unique IDs
+    @Autowired
+    private EmployeePayrollService employeeService;
 
-    // GET: Retrieve all employees
-    @GetMapping("/get")
-    public List<Employee> getAllEmployees() {
-        return employeeList;
+    // GET request - Retrieve a welcome message
+    @GetMapping("/welcome")
+    public String getWelcomeMessage() {
+        return "Welcome to Employee Payroll App!";
     }
 
-    // GET: Retrieve a specific employee by ID
-    @GetMapping("/get/{id}")
-    public Employee getEmployeeById(@PathVariable int id) {
-        return employeeList.stream()
-                .filter(emp -> emp.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
-
-    // POST: Add a new employee (Uses DTO)
-    @PostMapping("/create")
-    public Employee createEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        Employee employee = new Employee(empIdCounter++, employeeDTO.name, employeeDTO.salary);
-        employeeList.add(employee);
-        return employee;
+    // POST request - Add a new employee using Service Layer
+    @PostMapping("/add")
+    public ResponseEntity<Employee> addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        Employee savedEmployee = employeeService.addEmployee(employeeDTO);
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 }
