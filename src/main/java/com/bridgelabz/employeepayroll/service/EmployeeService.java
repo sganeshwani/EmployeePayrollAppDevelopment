@@ -3,12 +3,15 @@ package com.bridgelabz.employeepayroll.service;
 import com.bridgelabz.employeepayroll.dto.EmployeeDTO;
 import com.bridgelabz.employeepayroll.model.Employee;
 import com.bridgelabz.employeepayroll.repository.EmployeeRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Validated
 public class EmployeeService {
 
     @Autowired
@@ -33,8 +36,9 @@ public class EmployeeService {
 
     // Update employee details
     public Employee updateEmployee(int id, EmployeeDTO employeeDTO) {
-        Employee existingEmployee = employeeRepository.findById(id).orElse(null);
-        if (existingEmployee != null) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        if (optionalEmployee.isPresent()) {
+            Employee existingEmployee = optionalEmployee.get();
             existingEmployee.setName(employeeDTO.getName());
             existingEmployee.setSalary(employeeDTO.getSalary());
             return employeeRepository.save(existingEmployee);
@@ -45,5 +49,12 @@ public class EmployeeService {
     // Delete employee
     public void deleteEmployee(int id) {
         employeeRepository.deleteById(id);
+    }
+
+    // Create employee and return DTO
+    public EmployeeDTO createEmployee(@Valid EmployeeDTO employeePayrollDTO) {
+        Employee employee = new Employee(employeePayrollDTO);
+        Employee savedEmployee = employeeRepository.save(employee);
+        return new EmployeeDTO(savedEmployee.getName(), savedEmployee.getSalary());
     }
 }

@@ -5,7 +5,10 @@ import com.bridgelabz.employeepayroll.model.Employee;
 import com.bridgelabz.employeepayroll.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -24,26 +27,22 @@ public class EmployeePayrollController {
         return employeeService.getAllEmployees();
     }
 
-    // Get employee by ID
     @GetMapping("/get/{id}")
     public Employee getEmployeeById(@PathVariable int id) {
         log.info("Fetching employee with ID: {}", id);
         return employeeService.getEmployeeById(id);
     }
 
-    // Add new employee
-    @PostMapping("/add")
-    public Employee addEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        log.info("Adding new employee: {}", employeeDTO);
-        return employeeService.addEmployee(employeeDTO);
+    @PostMapping("/create")
+    public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTO employeePayrollDTO) {
+        return new ResponseEntity<>(employeeService.createEmployee(employeePayrollDTO), HttpStatus.CREATED);
     }
 
-    // Update employee details
     @PutMapping("/update/{id}")
-    public Employee updateEmployee(@PathVariable int id, @RequestBody EmployeeDTO employeeDTO) {
-        log.info("Updating employee with ID: {}", id);
-        return employeeService.updateEmployee(id, employeeDTO);
+    public ResponseEntity<Employee> updateEmployee(@PathVariable int id, @Valid @RequestBody EmployeeDTO employeePayrollDTO) {
+        return new ResponseEntity<>(employeeService.updateEmployee(id, employeePayrollDTO), HttpStatus.OK);
     }
+
 
     // Delete employee
     @DeleteMapping("/delete/{id}")
